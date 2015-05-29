@@ -1,0 +1,41 @@
+{
+  "name": "pushbullet",
+  "version": "1.0.0",
+  "description": "Pushbullet DSLink",
+  "license": "Apache",
+  "author": {
+    "name": "Logan Gorence",
+    "email": "loganjohngorence@gmail.com"
+  },
+  "engines": {
+    "java": ">=1.7.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/IOT-DSA/dslink-java-pushbullet"
+  },
+  "bugs": {
+    "url": "https://github.com/IOT-DSA/dslink-java-pushbullet/issues"
+  },
+  "configs": {
+    "nodes": {
+      "type": "path",
+      "default": "nodes.json",
+      "required": true
+    },
+    "key": {
+      "type": "path",
+      "default": ".key",
+      "required": true
+    },
+    "log": {
+      "type": "enum",
+      "value": "info",
+      "required": true,
+      "default": "info"
+    },
+    "broker": {
+      "type": "url"
+    }
+  }
+}

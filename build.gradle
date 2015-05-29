@@ -1,0 +1,25 @@
+apply plugin: 'java'
+
+repositories {
+    mavenCentral()
+    maven {
+        name = 'directcode'
+        url = 'https://oss.sonatype.org/content/repositories/snapshots/'
+    }
+    maven {
+        name = 'directcode'
+        url = 'http://nexus.directcode.org/nexus/content/repositories/snapshots/'
+    }
+}
+
+dependencies {
+    compile 'org.iot-dsa:dslink:0.3.0-SNAPSHOT'
+    compile 'org.directcode:jpushbullet:1.0-SNAPSHOT'
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'org.dsa.iot.DSLink'
+    }
+}
+

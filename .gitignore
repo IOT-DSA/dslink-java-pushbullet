@@ -1,0 +1,7 @@
+.gradle/
+build/
+*.swp
+.idea/
+*.iml
+nodes.json
+.key
