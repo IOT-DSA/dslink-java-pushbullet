@@ -1,14 +1,22 @@
 package org.dsa.iot;
 
-import net.iharder.jpushbullet2.PushbulletClient;
 import org.dsa.iot.dslink.DSLinkFactory;
+
+import java.io.*;
 
 public class DSLink {
 
-    public static final PushbulletClient pbClient = new PushbulletClient("Tu9JdmdwfjJQjIEiQwiwGoMW5PUFfwMg");
-
     public static void main(String[] args) {
-        DSLinkFactory.startResponder("Pushbullet-", new String[]{"-b", "http://localhost:8080/conn"}, new Responder());
+        try {
+            String token = new BufferedReader(new FileReader(new File("pushbulletKey"))).readLine();
+            DSLinkFactory.startResponder("Pushbullet", args, new Responder(token));
+        } catch (FileNotFoundException e) {
+            System.err.println("pushbulletKey not found.");
+            System.exit(1);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
     }
 
 }
