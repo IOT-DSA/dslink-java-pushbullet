@@ -7,9 +7,7 @@
     "name": "Logan Gorence",
     "email": "loganjohngorence@gmail.com"
   },
-  "engines": {
-    "java": ">=1.7.0"
-  },
+  "main": "bin/dslink-java-pushbullet",
   "repository": {
     "type": "git",
     "url": "https://github.com/IOT-DSA/dslink-java-pushbullet"
@@ -17,25 +15,24 @@
   "bugs": {
     "url": "https://github.com/IOT-DSA/dslink-java-pushbullet/issues"
   },
+  "engines": {
+    "java": ">=1.7.0"
+  },
   "configs": {
+    "broker": {
+      "type": "url"
+    },
     "nodes": {
       "type": "path",
-      "default": "nodes.json",
-      "required": true
+      "default": "nodes.json"
     },
     "key": {
       "type": "path",
-      "default": ".key",
-      "required": true
+      "default": ".key"
     },
     "log": {
       "type": "enum",
-      "value": "info",
-      "required": true,
       "default": "info"
-    },
-    "broker": {
-      "type": "url"
     }
   }
 }

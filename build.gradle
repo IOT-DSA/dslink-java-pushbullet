@@ -1,4 +1,8 @@
 apply plugin: 'java'
+apply plugin: 'application'
+
+version = '1.0-SNAPSHOT'
+mainClassName = 'org.dsa.iot.DSLink'
 
 targetCompatibility = 1.7
 sourceCompatibility = 1.7
@@ -20,9 +24,9 @@ dependencies {
     compile 'org.directcode:jpushbullet:1.0-SNAPSHOT'
 }
 
-jar {
-    manifest {
-        attributes 'Main-Class': 'org.dsa.iot.DSLink'
-    }
+run {
+    args System.getProperty("exec.args", "").split()
+    workingDir project.buildDir
 }
 
+applicationDistribution.from new File(project.projectDir, "/dslink.json")
