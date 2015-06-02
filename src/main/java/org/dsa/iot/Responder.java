@@ -26,6 +26,8 @@ public class Responder extends DSLinkHandler {
 
     public Responder(String token) {
         pbClient = new PushbulletClient(token);
+        pbClient.addPushbulletListener(new PushListener(this));
+        pbClient.startWebsocket();
         deviceNodes = new HashMap<>();
         pushNodes = new HashMap<>();
         updateThread = new UpdateThread(this);
