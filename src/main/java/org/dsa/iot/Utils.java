@@ -1,5 +1,7 @@
 package org.dsa.iot;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import net.iharder.jpushbullet2.Device;
 import net.iharder.jpushbullet2.Push;
 import net.iharder.jpushbullet2.PushbulletException;
@@ -14,24 +16,30 @@ import org.dsa.iot.dslink.node.value.Value;
 import org.dsa.iot.dslink.node.value.ValueType;
 import org.vertx.java.core.Handler;
 
+import java.io.*;
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Logan Gorence
  */
+@SuppressWarnings("ResultOfMethodCallIgnored")
 public class Utils {
 
     private static final SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+    private static final Gson gson = new Gson();
 
     public static String epochToISO8601(long epoch) {
         Date date = new Date(epoch * 1000L);
         return isoFormat.format(date);
     }
 
-    public static Node buildDeviceNode(final Responder responder, final Device pbDevice) {
+    public static Node buildDeviceNode(final UpdateThread updateThread, final Device pbDevice) {
         // Root device Node
-        Node deviceNode = responder.devicesNode.createChild(pbDevice.getIden()).build();
+        Node deviceNode = updateThread.devicesNode.createChild(pbDevice.getIden()).build();
         deviceNode.setDisplayName(pbDevice.getNickname());
 
         // Actions
@@ -41,7 +49,7 @@ public class Utils {
                 Value title = event.getParameter("Title", ValueType.STRING);
                 Value message = event.getParameter("Message", ValueType.STRING);
                 try {
-                    responder.pbClient.sendNote(pbDevice.getIden(), title.getString(), message.getString());
+                    updateThread.pbClient.sendNote(pbDevice.getIden(), title.getString(), message.getString());
                 } catch (PushbulletException e) {
                     e.printStackTrace();
                 }
@@ -55,7 +63,7 @@ public class Utils {
             public void handle(ActionResult event) {
                 Value url = event.getParameter("URL", ValueType.STRING);
                 try {
-                    responder.pbClient.sendAddress(pbDevice.getIden(), url.getString(), url.getString());
+                    updateThread.pbClient.sendAddress(pbDevice.getIden(), url.getString(), url.getString());
                 } catch (PushbulletException e) {
                     e.printStackTrace();
                 }
@@ -138,22 +146,55 @@ public class Utils {
         sendNoteNode.build();
         sendURLNode.build();
 
-        if (!responder.deviceNodes.containsKey(pbDevice.getIden())) {
-            responder.deviceNodes.put(pbDevice.getIden(), deviceNode);
+        if (!updateThread.deviceNodes.containsKey(pbDevice.getIden())) {
+            updateThread.deviceNodes.put(pbDevice.getIden(), deviceNode);
         }
 
         return deviceNode;
     }
 
-    public static Node buildPushNode(final Responder responder, Push pbPush) {
+    public static Node buildPushNode(final UpdateThread updateThread, Push pbPush) {
         Responder.LOGGER.info("Building push node for " + pbPush.getIden());
-        Node pushNode = responder.pushesNode.createChild(pbPush.getIden())
+        Node pushNode = updateThread.pushesNode.createChild(pbPush.getIden())
                 .setDisplayName((pbPush.getIden() == null || pbPush.getIden().isEmpty()) ? pbPush.getIden() : "Push")
                 .build();
 
-        responder.pushNodes.put(pbPush.getIden(), pushNode);
+        updateThread.pushNodes.put(pbPush.getIden(), pushNode);
 
         return pushNode;
+    }
+
+    /**
+     * Load a configuration file and parses the JSON to return a Map that
+     * contains the name and API key.
+     *
+     * @param configFile Path of configuration file.
+     * @return Map of Pushbullet names and API keys.
+     */
+    public static Map<String, String> loadConfiguration(File configFile) throws IOException {
+        Map<String, String> configs;
+        BufferedReader reader = new BufferedReader(new FileReader(configFile));
+        Type stringStringMap = new TypeToken<Map<String, String>>(){}.getType();
+        configs = gson.fromJson(reader, stringStringMap);
+        reader.close();
+        if (configs == null) {
+            configs = new HashMap<>();
+        }
+        return configs;
+    }
+
+    public static void saveConfiguration(File configFile, Map<String, String> storedConfigs) throws IOException {
+        BufferedWriter writer = new BufferedWriter(new FileWriter(configFile));
+        writer.write(gson.toJson(storedConfigs));
+        writer.close();
+    }
+
+    public static void addAccountNode(final Node superRoot, String name, String apiKey) {
+        if (!Responder.updateThreads.containsKey(name)) {
+            UpdateThread updateThread = new UpdateThread(superRoot, name, apiKey);
+            updateThread.start();
+            Responder.updateThreads.put(name, updateThread);
+        }
     }
 
 }

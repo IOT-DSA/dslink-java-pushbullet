@@ -9,16 +9,16 @@ import net.iharder.jpushbullet2.PushbulletListener;
  */
 public class PushListener implements PushbulletListener {
 
-    private Responder responder;
+    private UpdateThread updateThread;
 
-    protected PushListener(Responder responder) {
-        this.responder = responder;
+    protected PushListener(UpdateThread updateThread) {
+        this.updateThread = updateThread;
     }
 
     @Override
     public void pushReceived(PushbulletEvent pushbulletEvent) {
         try {
-            Utils.buildPushNode(responder, pushbulletEvent.getPushbulletClient().getNewPushes(1).get(0));
+            Utils.buildPushNode(updateThread, pushbulletEvent.getPushbulletClient().getNewPushes(1).get(0));
         } catch (PushbulletException e) {
             e.printStackTrace();
         }
@@ -26,6 +26,7 @@ public class PushListener implements PushbulletListener {
 
     @Override
     public void devicesChanged(PushbulletEvent pushbulletEvent) {
+        Responder.LOGGER.info("Devices changed");
     }
 
     @Override
