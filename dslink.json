@@ -1,5 +1,5 @@
 {
-  "name": "pushbullet",
+  "name": "dslink-java-pushbullet",
   "version": "1.0.0",
   "description": "Pushbullet DSLink",
   "license": "Apache",
