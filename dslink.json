@@ -19,6 +19,10 @@
     "java": ">=1.7.0"
   },
   "configs": {
+    "name": {
+      "type": "string",
+      "default": "pushbullet"
+    },
     "broker": {
       "type": "url"
     },
@@ -33,6 +37,10 @@
     "log": {
       "type": "enum",
       "default": "info"
+    },
+    "handler_class": {
+      "type": "string",
+      "default": "org.dsa.iot.pushbullet.Responder"
     }
   }
 }

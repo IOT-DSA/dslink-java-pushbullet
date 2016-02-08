@@ -1,6 +1,5 @@
-package org.dsa.iot;
+package org.dsa.iot.pushbullet;
 
-import net.iharder.jpushbullet2.PushbulletClient;
 import org.dsa.iot.dslink.*;
 import org.dsa.iot.dslink.DSLink;
 import org.dsa.iot.dslink.methods.StreamState;
@@ -11,9 +10,9 @@ import org.dsa.iot.dslink.node.actions.Action;
 import org.dsa.iot.dslink.node.actions.ActionResult;
 import org.dsa.iot.dslink.node.actions.Parameter;
 import org.dsa.iot.dslink.node.value.ValueType;
+import org.dsa.iot.dslink.util.handler.Handler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.vertx.java.core.Handler;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,8 +24,8 @@ import java.util.Map;
  */
 public class Responder extends DSLinkHandler {
 
-    protected static final Logger LOGGER = LoggerFactory.getLogger(Responder.class);
-    protected static final Map<String, UpdateThread> updateThreads = new HashMap<>();
+    static final Logger LOGGER = LoggerFactory.getLogger(Responder.class);
+    static final Map<String, UpdateThread> updateThreads = new HashMap<>();
     private static final File configFile = new File("pushbullet_config.json");
     private static Map<String, String> storedConfigs;
 
@@ -37,6 +36,11 @@ public class Responder extends DSLinkHandler {
             e.printStackTrace();
             System.exit(1);
         }
+    }
+
+    @Override
+    public boolean isResponder() {
+        return true;
     }
 
     @Override

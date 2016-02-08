@@ -1,4 +1,4 @@
-package org.dsa.iot;
+package org.dsa.iot.pushbullet;
 
 import net.iharder.jpushbullet2.PushbulletEvent;
 import net.iharder.jpushbullet2.PushbulletException;
