@@ -18,7 +18,7 @@ repositories {
 }
 
 dependencies {
-    compile 'org.iot-dsa:dslink:0.14.0'
+    compile 'org.iot-dsa:dslink:0.14.1'
     compile 'org.directcode:jpushbullet:1.0-SNAPSHOT'
 }
 
